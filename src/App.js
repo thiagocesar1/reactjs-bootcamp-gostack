@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from "react";
+import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link, Paper } from '@material-ui/core';
+import { Add, Remove, GitHub } from '@material-ui/icons';
+
 import api from './services/api';
 
 import "./styles.css";
@@ -32,15 +35,58 @@ function App() {
   }
 
   return (
-    <div>
-      <ul data-testid="repository-list">
-        {
-          repositories.map(repository => <li key={repository.id}>{repository.title}<button onClick={() => handleRemoveRepository(repository.id)}>Remover</button></li>)
-        }
-      </ul>
-
-      <button onClick={handleAddRepository}>Adicionar</button>
-    </div>
+    <Container maxWidth="md">
+        <TableContainer component={Paper}>
+          <Table aria-label="collapsible table" style={{backgroundColor:'#f8f8f2'}}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Title</TableCell>
+                <TableCell align="center">Github Link</TableCell>
+                <TableCell align="center">Likes</TableCell>
+                <TableCell align="center">Techs</TableCell>
+                <TableCell align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
+                repositories.map(repository => (
+                    <TableRow>
+                      <TableCell align="center">{repository.title}</TableCell>
+                      <TableCell align="center">
+                        <Button component={Link} variant="contained" color="primary" href={repository.url} target="_blank">
+                          <GitHub/>
+                        </Button>
+                      </TableCell>
+                      <TableCell align="center">{repository.likes}</TableCell>
+                      <TableCell align="justify">
+                          <div component="ul">
+                            {
+                              repository.techs.map(tech => (
+                                <Button variant="outlined" color="primary" size="small" style={{ margin:2 }}>
+                                  {tech}
+                                </Button>
+                            ))}
+                          </div>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button onClick={() => handleRemoveRepository(repository.id)} variant="contained" color="secondary">
+                          <Remove />
+                          Remover
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell>
+                    <Button variant="contained" color="primary" onClick={handleAddRepository}>
+                      <Add/> Adicionar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+    </Container>
   );
 }
 
