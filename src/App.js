@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
-import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link, Paper } from '@material-ui/core';
-import { Add, Remove, GitHub } from '@material-ui/icons';
+import { IconButton, Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link, Paper } from '@material-ui/core';
+import { ThumbUp, Add, Remove, GitHub } from '@material-ui/icons';
 
 import api from './services/api';
 
@@ -21,7 +21,6 @@ function App() {
         title: `Repositório ${Date.now()}`,
         url: "https://github.com/thiagocesar1/conceitos-reactjs-bootcamp-gostack",
         techs: ["ReactJS", "JavaScript"]});
-    console.log(response);
     setRepositories([...repositories, response.data]);
   }
 
@@ -31,6 +30,15 @@ function App() {
     const repoIndex = reposUpdated.findIndex(repository => repository.id === id);
     
     reposUpdated.splice(repoIndex, 1);    
+    setRepositories(reposUpdated);
+  }
+
+  async function handleLikeRepository(id) {
+    api.post(`repositories/${id}/like`);
+    let reposUpdated = [...repositories];
+    const repoIndex = reposUpdated.findIndex(repository => repository.id === id);
+    let repository = repositories[repoIndex];
+    repository.likes += 1;    
     setRepositories(reposUpdated);
   }
 
@@ -57,7 +65,12 @@ function App() {
                           <GitHub/>
                         </Button>
                       </TableCell>
-                      <TableCell align="center">{repository.likes}</TableCell>
+                      <TableCell align="center">
+                        {repository.likes}
+                        <IconButton variant="outlined" size="small" style={{marginLeft:5}} onClick={() => handleLikeRepository(repository.id)} color="primary">
+                          <ThumbUp />
+                        </IconButton>
+                      </TableCell>
                       <TableCell align="justify">
                           <div component="ul">
                             {
